@@ -58,7 +58,7 @@ public class ClientDaoTest {
         var clientCopy3 = clientDao.getClientById(id);
 
         // then
-        assertEquals(3, clientCopy3.getVersion());
+        assertEquals(2, clientCopy3.getVersion());
         assertEquals(0, clientCopy3.getDebts().iterator().next().getVersion());
     }
 

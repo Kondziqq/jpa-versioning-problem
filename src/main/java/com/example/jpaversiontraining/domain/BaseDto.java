@@ -15,7 +15,7 @@ import java.util.Date;
 @EqualsAndHashCode
 public abstract class BaseDto {
 
-    private long version;
+    private Integer version;
 
     private Date creationDate;
 
