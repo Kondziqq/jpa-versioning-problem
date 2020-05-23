@@ -19,6 +19,10 @@ public class ClientDao implements ClientPersistence {
     public long save(Client client) {
 
         var clientEntity = converter.getMapper().map(client, ClientEntity.class);
+
+        clientEntity.getDebts().forEach(debtEntity -> debtEntity.getPayments().forEach(paymentEntity -> paymentEntity.setDebt(debtEntity)));
+        clientEntity.getDebts().forEach(debtEntity -> debtEntity.setClient(clientEntity));
+
         return clientRepository.save(clientEntity).getId();
     }
 

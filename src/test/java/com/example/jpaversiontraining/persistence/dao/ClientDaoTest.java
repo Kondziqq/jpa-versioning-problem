@@ -53,7 +53,7 @@ public class ClientDaoTest {
         id = clientDao.save(clientCopy1);
         var clientCopy2 = clientDao.getClientById(id);
 
-        clientCopy2.setLanguage("en");
+        clientCopy2.setLanguage("ru");
         id = clientDao.save(clientCopy2);
         var clientCopy3 = clientDao.getClientById(id);
 
@@ -66,16 +66,28 @@ public class ClientDaoTest {
     public void shouldNotIncrementChildVersionAfterParentEntitySaved() {
 
         // given
+//        var clientEntity = ClientEntity.builder()
+//                .firstName("John")
+//                .lastName("Smith")
+//                .language("pl")
+//                .debts(Set.of(
+//                        DebtEntity.builder()
+//                                .amount(BigDecimal.valueOf(25000))
+//                                .payments(Set.of(PaymentEntity.builder().amount(BigDecimal.valueOf(2500)).date(Date.from(Instant.now())).build()))
+//                                .build()))
+//                .build();
+
+        var payment = PaymentEntity.builder().amount(BigDecimal.valueOf(2500)).date(Date.from(Instant.now())).build();
+
+        var debt = DebtEntity.builder().amount(BigDecimal.valueOf(25000)).build();
+        debt.addPayment(payment);
+
         var clientEntity = ClientEntity.builder()
                 .firstName("John")
                 .lastName("Smith")
                 .language("pl")
-                .debts(Set.of(
-                        DebtEntity.builder()
-                                .amount(BigDecimal.valueOf(25000))
-                                .payments(Set.of(PaymentEntity.builder().amount(BigDecimal.valueOf(2500)).date(Date.from(Instant.now())).build()))
-                                .build()))
                 .build();
+        clientEntity.addDebt(debt);
 
         // when
         var clientEntityCopy = clientRepository.save(clientEntity);
@@ -85,6 +97,8 @@ public class ClientDaoTest {
 
         clientEntityCopy.setLanguage("ru");
         clientEntityCopy = clientRepository.save(clientEntityCopy);
+
+        clientDao.getClientById(clientEntityCopy.getId());
 
         // then
         assertEquals(2, clientEntityCopy.getVersion());

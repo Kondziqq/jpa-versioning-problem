@@ -9,13 +9,16 @@ import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -24,7 +27,6 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 public class DebtEntity extends BaseEntity {
 
     @Id
@@ -34,7 +36,20 @@ public class DebtEntity extends BaseEntity {
 
     private BigDecimal amount;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "debt_id")
+    @OneToMany(mappedBy = "debt", cascade = CascadeType.ALL)
     private Set<PaymentEntity> payments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    private ClientEntity client;
+
+    public void addPayment(PaymentEntity paymentEntity) {
+
+        if (payments == null) {
+            payments = new HashSet<>();
+        }
+
+        payments.add(paymentEntity);
+        paymentEntity.setDebt(this);
+    }
 }

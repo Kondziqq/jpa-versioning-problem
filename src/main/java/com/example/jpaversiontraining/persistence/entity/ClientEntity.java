@@ -3,7 +3,6 @@ package com.example.jpaversiontraining.persistence.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,9 +12,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -24,7 +23,6 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 public class ClientEntity extends BaseEntity {
 
     @Id
@@ -38,7 +36,16 @@ public class ClientEntity extends BaseEntity {
 
     private String language;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "client_id")
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private Set<DebtEntity> debts;
+
+    public void addDebt(DebtEntity debtEntity) {
+
+        if (debts == null) {
+            debts = new HashSet<>();
+        }
+
+        debts.add(debtEntity);
+        debtEntity.setClient(this);
+    }
 }

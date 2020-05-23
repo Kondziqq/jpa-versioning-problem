@@ -8,9 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -21,7 +24,6 @@ import java.util.Date;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 public class PaymentEntity extends BaseEntity {
 
     @Id
@@ -32,4 +34,8 @@ public class PaymentEntity extends BaseEntity {
     private Date date;
 
     private BigDecimal amount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "debt_id")
+    private DebtEntity debt;
 }
